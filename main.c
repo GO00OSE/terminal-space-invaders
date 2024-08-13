@@ -13,6 +13,7 @@ char bullet1[] = "\x1b[0m[\x1b[0;32m,\x1b[0m]";
 char bullet2[] = "\x1b[0m[\x1b[0;32m'\x1b[0m]";
 
 int playerPos[2] = {5,9};
+int score = 0;
 
 int GAMEWIDTH  = 10;
 int GAMEHEIGHT = 10;
@@ -86,6 +87,8 @@ int main(){
             gameboard[x][y] = 0;
             if (y != 0){
               if (gameboard[x][y-1] != 0){
+                if (gameboard[x][y-1] == 3)
+                  score++;
                 gameboard[x][y-1] = 0;
               } else {
                 gameboard[x][y-1] = 4;
@@ -101,13 +104,19 @@ int main(){
               } else if(x == playerPos[0] && y + 1 == playerPos[1]){
                 alive = 0;
               } else {
-                gameboard[x][y+1] = 6;
+                gameboard[x][y+1] = 9;
               }
             } 
+          } else if (gameboard[x][y] == 9){
+            gameboard[x][y] = 6;
           } else if(gameboard[x][y] == 3){
-            int r = rand() % 50; //random number between 0 and 49
-            if (tick % 4 == 0){ //has a 1 in 50 chance to shoot
-              gameboard[x][y+1] = 6; 
+            int r = rand() % 100; //random number between 0 and 49
+            if (tick % 4 == 0 && r >= 66){ //has a 1 in 50 chance to shoot
+              gameboard[x][y+1] = 9; 
+            }
+            if (tick % 8 == 0) {
+              gameboard[x][y] = 0;
+              gameboard[x-1][y] = 3; 
             }
           }
         }
@@ -144,6 +153,6 @@ int main(){
     printf("\x1b[2K"); // Clear entire line
   } 
   printf("\x1b[?25h"); //Set cursor visable
-  printf("\x1b[5m\x1b[1;31m[GAMEOVER]\x1b[25m\n\x1b[1;32mScore: %d \x1b[1;37m \n", 0);
+  printf("\x1b[5m\x1b[1;31m[GAMEOVER]\x1b[25m\n\x1b[1;32mScore: %d \x1b[1;37m \n", score);
   return 0;
 }
